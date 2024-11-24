@@ -148,7 +148,7 @@ def preprocess_and_predict(test_data_path, model_path):
 
 # Usage
 if __name__ == "__main__":
-    test_data_path = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\patient.csv" 
-    model_path = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\mlmodel\\KNN_classifier_discharge.pkl"  
+    test_data_path = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\patient.csv" 
+    model_path = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\mlmodel\\KNN_classifier_discharge.pkl"  
     result = preprocess_and_predict(test_data_path, model_path)
     print(result)
