@@ -34,7 +34,7 @@ def get_patient_info():
         "gender": patient_info.get("GENDER"),
         "diagnosis": patient_info.get("DIAGNOSIS")
     }
-    
+    #comment
     # Return the filtered details of the patient
     return jsonify({patient_id: filtered_info})
 
