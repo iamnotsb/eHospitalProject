@@ -4,11 +4,15 @@ import re
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 import category_encoders as ce
 from joblib import load
+from sklearn.impute import SimpleImputer
 
 
 def preprocess_and_predict(test_data_path, model_path):
     # Load test data
     test_data = pd.read_csv(test_data_path)
+    
+    # Save 'patient_id' before dropping columns
+    patient_ids = test_data['patient_id']
     
     # Drop irrelevant columns
     columns_to_drop = [
@@ -115,8 +119,6 @@ def preprocess_and_predict(test_data_path, model_path):
     label_encoder = LabelEncoder()
     DF_2['DISCHARGE_LOCATION'] = label_encoder.fit_transform(DF_2['DISCHARGE_LOCATION'])
 
-    from sklearn.impute import SimpleImputer
-
     # Impute missing values in DF_2
     imputer = SimpleImputer(strategy='mean')
     DF_2 = pd.DataFrame(imputer.fit_transform(DF_2), columns=DF_2.columns)
@@ -130,18 +132,23 @@ def preprocess_and_predict(test_data_path, model_path):
     # Make predictions
     predictions = model.predict(DF_2)
     predicted_categories = label_encoder.inverse_transform(predictions)
-
     
     # Combine predictions with original target for comparison
     comparison = pd.DataFrame({
+        'patient_id': patient_ids,
         'Original_DISCHARGE_LOCATION': original_discharge_location,
         'Predicted': predicted_categories
     })
     
-    return comparison
+    # Convert comparison to dictionary with patient_id as the key
+    result_dict = comparison.set_index('patient_id').to_dict(orient='index')
+    
+    return result_dict
 
 # Usage
-test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data.csv" 
+test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data1.csv" 
 model_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\KNN_classifier_discharge.pkl"  
-comparison_df = preprocess_and_predict(test_data_path, model_path)
-print(comparison_df)
+comparison_dict = preprocess_and_predict(test_data_path, model_path)
+
+# Output the dictionary
+print(comparison_dict)

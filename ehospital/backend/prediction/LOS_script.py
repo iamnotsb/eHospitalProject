@@ -10,6 +10,8 @@ def preprocess_and_predict(test_data_path, model_path):
     # Load test data
     test_data = pd.read_csv(test_data_path)
     
+    # Save the patient_id to use as keys in the output dictionary
+    patient_ids = test_data['patient_id'].copy()
     
     # Drop irrelevant columns
     columns_to_drop = [
@@ -90,8 +92,8 @@ def preprocess_and_predict(test_data_path, model_path):
     # Drop ADMISSION_TYPE
     DF_1 = DF_1.drop(columns=['ADMISSION_TYPE'], axis='columns')
     
-    DF_1.loc[DF_1['ETHNICITY']!='WHITE','ETHNICITY']='NON-WHITE'
-    DF_1.loc[DF_1['ADMISSION_LOCATION']!='EMERGENCY ROOM ADMIT','ADMISSION_LOCATION']='NO EMERGENCY ROOM ADMIT'
+    DF_1.loc[DF_1['ETHNICITY'] != 'WHITE', 'ETHNICITY'] = 'NON-WHITE'
+    DF_1.loc[DF_1['ADMISSION_LOCATION'] != 'EMERGENCY ROOM ADMIT', 'ADMISSION_LOCATION'] = 'NO EMERGENCY ROOM ADMIT'
 
     # One-hot encoding
     DF_1 = pd.get_dummies(
@@ -111,7 +113,6 @@ def preprocess_and_predict(test_data_path, model_path):
     label_encoder = LabelEncoder()
     DF_1['LOS_Binned'] = label_encoder.fit_transform(DF_1['LOS_Binned'])
 
-
     # Align test data columns with model's training data
     model = load(model_path)
     model_columns = model.feature_names_in_
@@ -119,23 +120,26 @@ def preprocess_and_predict(test_data_path, model_path):
 
     # Make predictions
     predictions = model.predict(DF_1)
-     # Use predefined labels for inverse transformation
+    
+    # Use predefined labels for inverse transformation
     labels = ['0-1', '1-5', '5-10', '10-20', '20-50', '50+']
-    # If predictions contain unseen labels, handle them gracefully
     predictions = np.clip(predictions, 0, len(labels) - 1)  # Ensure predictions are within the range of labels
     
     # Convert predictions back to the original bins
     predicted_labels = [labels[i] for i in predictions]    
-    # Combine predictions with original target for comparison
-    comparison = pd.DataFrame({
-        'Original_LOS': original_LOS,
-        'Predicted': predicted_labels
-    })
     
-    return comparison
+    # Prepare the dictionary output
+    output_dict = {}
+    for idx, patient_id in enumerate(patient_ids):
+        output_dict[patient_id] = {
+            'Original_LOS': original_LOS.iloc[idx],
+            'Predicted': predicted_labels[idx]
+        }
+    
+    return output_dict
 
 # Usage
-test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data.csv" 
+test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data1.csv" 
 model_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\KNN_classifier_LOS.pkl"  
-comparison_df = preprocess_and_predict(test_data_path, model_path)
-print(comparison_df)
+comparison_dict = preprocess_and_predict(test_data_path, model_path)
+print(comparison_dict)

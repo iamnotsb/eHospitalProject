@@ -1,14 +1,16 @@
 import pandas as pd
 import numpy as np
 import re
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import LabelEncoder, StandardScaler
 import category_encoders as ce
 from joblib import load
-
 
 def preprocess_and_predict(test_data_path, model_path):
     # Load test data
     test_data = pd.read_csv(test_data_path)
+    
+    # Save the patient_id for dictionary keys
+    patient_ids = test_data['patient_id']
     
     # Save the original target for comparison
     original_admission_location = test_data['ADMISSION_LOCATION'].copy()
@@ -103,15 +105,21 @@ def preprocess_and_predict(test_data_path, model_path):
     predictions = model.predict(test_data)
     
     # Combine predictions with original target for comparison
-    comparison = pd.DataFrame({
-        'Original_ADMISSION_LOCATION': original_admission_location,
-        'Predicted': predictions
-    })
+    comparison_dict = {
+        patient_id: {
+            "Original_ADMISSION_LOCATION": original_location,
+            "Predicted": "Admitted to ICU" if prediction == 1 else "Not admitted to ICU"
+        }
+        for patient_id, original_location, prediction in zip(
+            patient_ids, original_admission_location, predictions
+        )
+    }
     
-    return comparison
+    return comparison_dict
 
 # Usage
-test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data.csv" 
+test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data1.csv" 
 model_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\XGBoost_classifier_model_admission.joblib"  
-comparison_df = preprocess_and_predict(test_data_path, model_path)
-print(comparison_df)
+comparison_dict = preprocess_and_predict(test_data_path, model_path)
+print(comparison_dict)
+
