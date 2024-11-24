@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 import numpy as np
 import re
@@ -143,12 +144,11 @@ def preprocess_and_predict(test_data_path, model_path):
     # Convert comparison to dictionary with patient_id as the key
     result_dict = comparison.set_index('patient_id').to_dict(orient='index')
     
-    return result_dict
+    return json.dumps(result_dict, indent=4)
 
 # Usage
-test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data1.csv" 
-model_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\KNN_classifier_discharge.pkl"  
-comparison_dict = preprocess_and_predict(test_data_path, model_path)
-
-# Output the dictionary
-print(comparison_dict)
+if __name__ == "__main__":
+    test_data_path = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\patient.csv" 
+    model_path = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\mlmodel\\KNN_classifier_discharge.pkl"  
+    result = preprocess_and_predict(test_data_path, model_path)
+    print(result)

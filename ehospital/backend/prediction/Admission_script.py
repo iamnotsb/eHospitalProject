@@ -1,3 +1,4 @@
+import json
 import pandas as pd
 import numpy as np
 import re
@@ -114,12 +115,12 @@ def preprocess_and_predict(test_data_path, model_path):
             patient_ids, original_admission_location, predictions
         )
     }
-    
-    return comparison_dict
+    return json.dumps(comparison_dict, indent=4)
 
 # Usage
-test_data_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\icu_test_data1.csv" 
-model_path = "C:\\Users\\Shivani Bhandari\\Downloads\\ICU model data\\XGBoost_classifier_model_admission.joblib"  
-comparison_dict = preprocess_and_predict(test_data_path, model_path)
-print(comparison_dict)
+if __name__ == "__main__":
+    test_data_path = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\patient.csv" 
+    model_path = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\mlmodel\\xgadmissionmodel3.joblib"  
+    result = preprocess_and_predict(test_data_path, model_path)
+    print(result)
 
