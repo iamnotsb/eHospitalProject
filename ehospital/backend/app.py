@@ -11,8 +11,8 @@ with open('patients_data.json', 'r') as f:
     data_dict = json.load(f)
 
 def run_script(script_name):
-    # pt = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\prediction\\" + script_name
-    pt = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\prediction\\"  + script_name
+    pt = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\prediction\\" + script_name
+   
     # script_path = os.path.join(SCRIPTS_DIR, script_name)
     result = subprocess.run(['python', pt], capture_output=True, text=True)
     return json.loads(result.stdout)  # Parse the output to a Python dictionary
