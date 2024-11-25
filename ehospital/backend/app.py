@@ -15,7 +15,7 @@ def run_script(script_name):
    
     # script_path = os.path.join(SCRIPTS_DIR, script_name)
     result = subprocess.run(['python', pt], capture_output=True, text=True)
-    return json.loads(result.stdout)  # Parse the output to a Python dictionary
+    return json.loads(result.stdout)  
 
 @app.route('/get_patient_data', methods=['GET'])
 def get_patient_data():
@@ -55,6 +55,5 @@ def get_patient_data():
         'diagnosis': patient_info.get("DIAGNOSIS")
     })
  
-# Run the app
 if __name__ == '__main__':
     app.run(debug=True)

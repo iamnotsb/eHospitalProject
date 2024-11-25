@@ -10,7 +10,7 @@ def preprocess_and_predict(test_data_path, model_path):
     # Load test data
     test_data = pd.read_csv(test_data_path)
     
-    # Save the patient_id for dictionary keys
+    # Save the patient_id 
     patient_ids = test_data['patient_id']
     
     # Save the original target for comparison
@@ -117,7 +117,6 @@ def preprocess_and_predict(test_data_path, model_path):
     }
     return json.dumps(comparison_dict, indent=4)
 
-# Usage
 if __name__ == "__main__":
     test_data_path = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\patient.csv" 
     model_path = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\mlmodel\\xgadmissionmodel3.joblib"  

@@ -146,7 +146,6 @@ def preprocess_and_predict(test_data_path, model_path):
     
     return json.dumps(result_dict, indent=4)
 
-# Usage
 if __name__ == "__main__":
     test_data_path = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\patient.csv" 
     model_path = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\mlmodel\\KNN_classifier_discharge.pkl"  
