@@ -9,9 +9,7 @@ function LoginPage({ onLoginSuccess }) {
   const handleSubmit = (e) => {
     e.preventDefault();
     
-    // Example login check (You can replace with actual logic)
     if (username === 'user' && password === 'password') {
-      // If login is successful, call onLoginSuccess
       onLoginSuccess(); 
     } else {
       alert('Invalid login credentials');
