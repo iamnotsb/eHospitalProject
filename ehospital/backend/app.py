@@ -2,11 +2,17 @@ from flask import Flask, jsonify, request
 import subprocess
 import json
 import os
+from flask_cors import CORS
 
 app = Flask(__name__) 
+CORS(app)
+
+with open('patients_data.json', 'r') as f:
+    data_dict = json.load(f)
 
 def run_script(script_name):
-    pt = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\prediction\\" + script_name
+    # pt = "C:\\ICUPred\\E-self-frontend\\ehospital\\backend\\prediction\\" + script_name
+    pt = "C:\\Users\\iamnotvk\\icupredproject\\eHospitalProject\\ehospital\\backend\\prediction\\"  + script_name
     # script_path = os.path.join(SCRIPTS_DIR, script_name)
     result = subprocess.run(['python', pt], capture_output=True, text=True)
     return json.loads(result.stdout)  # Parse the output to a Python dictionary
@@ -33,7 +39,7 @@ def get_patient_data():
 
     if admission is None or discharge is None or los is None:
         return jsonify({'error': 'Patient ID not found in the records'}), 404
-
+    patient_info = data_dict.get(patient_id)
     # Return the data in the response
     return jsonify({
         'patient_id': patient_id,
@@ -42,8 +48,13 @@ def get_patient_data():
         'original_discharge_location': discharge.get('Original_DISCHARGE_LOCATION'),
         'predicted_discharge_location': discharge.get('Predicted'),
         'original_los': los.get('Original_LOS'),
-        'predicted_los': los.get('Predicted')
+        'predicted_los': los.get('Predicted'),
+        'age': patient_info.get("Age"),
+        'ethnicity': patient_info.get("ETHNICITY"),
+        'gender': patient_info.get("GENDER"),
+        'diagnosis': patient_info.get("DIAGNOSIS")
     })
-
+ 
+# Run the app
 if __name__ == '__main__':
     app.run(debug=True)
