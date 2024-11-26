@@ -2,56 +2,56 @@ import React, { useState } from 'react';
 
 function HomePage() {
   const [patientId, setPatientId] = useState('');
-const [patientData, setPatientData] = useState(null);
-const [loading, setLoading] = useState(false);
-const [error, setError] = useState(null);
+  const [patientData, setPatientData] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
-const handleSearch = async () => {
-  if (!patientId) {
-    alert("Please enter a patient ID");
-    return;
-  }
-  
-  setLoading(true);
-  setError(null);
-  
-  try {
-    const response = await fetch(`http://127.0.0.1:5000/get_patient_data?patient_id=${patientId}`);
-    
-    if (!response.ok) {
-      throw new Error('Failed to fetch data');
+  const handleSearch = async () => {
+    if (!patientId) {
+      alert("Please enter a patient ID");
+      return;
     }
 
-    // First get the response as text
-    const responseText = await response.text();
-    
-    // Replace NaN with null in the response text
-    const sanitizedText = responseText.replace(/:\s*NaN/g, ': null');
-    
-    // Parse the sanitized JSON
-    let data;
+    setLoading(true);
+    setError(null);
+
     try {
-      data = JSON.parse(sanitizedText);
-    } catch (parseError) {
-      console.error('JSON Parse Error:', parseError);
-      throw new Error('Invalid data format received from server');
+      const response = await fetch(`http://127.0.0.1:5000/get_patient_data?patient_id=${patientId}`);
+      
+      if (!response.ok) {
+        throw new Error('Failed to fetch data');
+      }
+
+      // First get the response as text
+      const responseText = await response.text();
+      
+      // Replace NaN with null in the response text
+      const sanitizedText = responseText.replace(/:\s*NaN/g, ': null');
+      
+      // Parse the sanitized JSON
+      let data;
+      try {
+        data = JSON.parse(sanitizedText);
+      } catch (parseError) {
+        console.error('JSON Parse Error:', parseError);
+        throw new Error('Invalid data format received from server');
+      }
+
+      // Optional: Clean up the data object by converting any remaining NaN values to null
+      const cleanData = JSON.parse(
+        JSON.stringify(data, (key, value) => 
+          Number.isNaN(value) ? null : value
+        )
+      );
+
+      console.log("API Response:", cleanData);
+      setPatientData(cleanData);
+    } catch (err) {
+      console.error('Error:', err);
+      setError(err.message);
+    } finally {
+      setLoading(false);
     }
-
-    // Optional: Clean up the data object by converting any remaining NaN values to null
-    const cleanData = JSON.parse(
-      JSON.stringify(data, (key, value) => 
-        Number.isNaN(value) ? null : value
-      )
-    );
-
-    console.log("API Response:", cleanData);
-    setPatientData(cleanData);
-  } catch (err) {
-    console.error('Error:', err);
-    setError(err.message);
-  } finally {
-    setLoading(false);
-  }
   };
 
   return (
@@ -86,52 +86,60 @@ const handleSearch = async () => {
       {patientData && (
         <div className="patient-info">
           <h3>Patient Information</h3>
-          <div className="info-grid">
-            <div className="info-item">
-              <span className="label">Patient ID:</span>
-              <span className="value">{patientData.patient_id}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Age:</span>
-              <span className="value">{patientData.age}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Gender:</span>
-              <span className="value">{patientData.gender}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Ethnicity:</span>
-              <span className="value">{patientData.ethnicity}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Diagnosis:</span>
-              <span className="value">{patientData.diagnosis}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Original Admission Location:</span>
-              <span className="value">{patientData.original_admission_location}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Predicted Admission Location:</span>
-              <span className="value">{patientData.predicted_admission_location}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Original Discharge Location:</span>
-              <span className="value">{patientData.original_discharge_location}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Predicted Discharge Location:</span>
-              <span className="value">{patientData.predicted_discharge_location}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Original Length of Stay:</span>
-              <span className="value">{patientData.original_los}</span>
-            </div>
-            <div className="info-item">
-              <span className="label">Predicted Length of Stay:</span>
-              <span className="value">{patientData.predicted_los}</span>
-            </div>
-          </div>
+          <table>
+            <tbody>
+              <tr>
+                <td><strong>Patient ID:</strong></td>
+                <td>{patientData.patient_id}</td>
+              </tr>
+              <tr>
+                <td><strong>Age:</strong></td>
+                <td>{patientData.age}</td>
+              </tr>
+              <tr>
+                <td><strong>Gender:</strong></td>
+                <td>{patientData.gender}</td>
+              </tr>
+              <tr>
+                <td><strong>Ethnicity:</strong></td>
+                <td>{patientData.ethnicity}</td>
+              </tr>
+              <tr>
+                <td><strong>Diagnosis:</strong></td>
+                <td>{patientData.diagnosis}</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h3>Patient Prediction</h3>
+          <table>
+            <tbody>
+              <tr>
+                <td><strong>Original Admission Location:</strong></td>
+                <td>{patientData.original_admission_location}</td>
+              </tr>
+              <tr>
+                <td><strong>Predicted Admission Location:</strong></td>
+                <td>{patientData.predicted_admission_location}</td>
+              </tr>
+              <tr>
+                <td><strong>Original Discharge Location:</strong></td>
+                <td>{patientData.original_discharge_location}</td>
+              </tr>
+              <tr>
+                <td><strong>Predicted Discharge Location:</strong></td>
+                <td>{patientData.predicted_discharge_location}</td>
+              </tr>
+              <tr>
+                <td><strong>Original Length of Stay:</strong></td>
+                <td>{patientData.original_los}</td>
+              </tr>
+              <tr>
+                <td><strong>Predicted Length of Stay:</strong></td>
+                <td>{patientData.predicted_los}</td>
+              </tr>
+            </tbody>
+          </table>
         </div>
       )}
 
@@ -224,26 +232,20 @@ const handleSearch = async () => {
           border-bottom: 2px solid #3498db;
         }
 
-        .info-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: 20px;
+        table {
+          width: 100%;
+          border-collapse: collapse;
+          margin-top: 20px;
         }
 
-        .info-item {
+        table td {
           padding: 10px;
-          background: #f8f9fa;
-          border-radius: 4px;
+          border: 1px solid #ddd;
+          text-align: left;
         }
 
-        .label {
-          font-weight: bold;
+        table td strong {
           color: #34495e;
-          margin-right: 8px;
-        }
-
-        .value {
-          color: #2c3e50;
         }
 
         .no-data {
@@ -262,10 +264,6 @@ const handleSearch = async () => {
 
           input {
             max-width: none;
-          }
-
-          .info-grid {
-            grid-template-columns: 1fr;
           }
         }
       `}</style>
