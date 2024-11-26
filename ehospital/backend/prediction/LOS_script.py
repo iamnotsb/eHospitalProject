@@ -124,7 +124,7 @@ def preprocess_and_predict(test_data_path, model_path):
     
     # Use predefined labels for inverse transformation
     labels = ['0-1', '1-5', '5-10', '10-20', '20-50', '50+']
-    predictions = np.clip(predictions, 0, len(labels) - 1)  # Ensure predictions are within the range of labels
+    predictions = np.clip(predictions, 0, len(labels) - 1)  
     
     # Convert predictions back to the original bins
     predicted_labels = [labels[i] for i in predictions]    

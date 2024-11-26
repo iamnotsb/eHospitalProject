@@ -5,7 +5,7 @@ import './Footer.css'; // Import CSS styles
 function Footer() {
   return (
     <footer className="footer">
-      <p></p> {/* Content removed as requested */}
+      <p></p> {}
     </footer>
   );
 }

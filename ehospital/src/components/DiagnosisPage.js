@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import Header from './Header'; // Import the Header component
+import Header from './Header'; 
 
 function DiagnosisPage() {
   const [patientId, setPatientId] = useState('');

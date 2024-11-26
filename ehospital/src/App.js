@@ -2,8 +2,8 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
-import LoginPage from './components/LoginPage'; // Correct import
-import HomePage from './pages/HomePage'; // Correct import
+import LoginPage from './components/LoginPage'; 
+import HomePage from './pages/HomePage'; 
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
