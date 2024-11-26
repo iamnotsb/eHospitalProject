@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Header from './Header'; // Import the Header component
 
 function DiagnosisPage() {
   const [patientId, setPatientId] = useState('');
@@ -31,26 +32,29 @@ function DiagnosisPage() {
 
   return (
     <div>
-      <h2>Diagnosis Page</h2>
-      <input
-        type="text"
-        placeholder="Enter Patient ID"
-        value={patientId}
-        onChange={(e) => setPatientId(e.target.value)}
-      />
-      <button onClick={fetchPatientData}>Search</button>
+      <Header /> {/* Add the Header component */}
+      <div style={{ padding: '20px' }}>
+        <h2>Diagnosis Page</h2>
+        <input
+          type="text"
+          placeholder="Enter Patient ID"
+          value={patientId}
+          onChange={(e) => setPatientId(e.target.value)}
+        />
+        <button onClick={fetchPatientData}>Search</button>
 
-      {error && <div style={{ color: 'red' }}>{error}</div>}
+        {error && <div style={{ color: 'red' }}>{error}</div>}
 
-      {patientData && (
-        <div>
-          <h3>Patient Details</h3>
-          <p><strong>Age:</strong> {patientData.age}</p>
-          <p><strong>Ethnicity:</strong> {patientData.ethnicity}</p>
-          <p><strong>Gender:</strong> {patientData.gender}</p>
-          <p><strong>Diagnosis:</strong> {patientData.diagnosis}</p>
-        </div>
-      )}
+        {patientData && (
+          <div>
+            <h3>Patient Details</h3>
+            <p><strong>Age:</strong> {patientData.age}</p>
+            <p><strong>Ethnicity:</strong> {patientData.ethnicity}</p>
+            <p><strong>Gender:</strong> {patientData.gender}</p>
+            <p><strong>Diagnosis:</strong> {patientData.diagnosis}</p>
+          </div>
+        )}
+      </div>
     </div>
   );
 }

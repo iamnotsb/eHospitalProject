@@ -1,10 +1,11 @@
 // src/components/Footer.js
 import React from 'react';
+import './Footer.css'; // Import CSS styles
 
 function Footer() {
   return (
-    <footer style={{ padding: '10px', background: '#4CAF50', color: 'white', textAlign: 'center' }}>
-      <p>© 2024 eHospital. All Rights Reserved.</p>
+    <footer className="footer">
+      <p></p> {/* Content removed as requested */}
     </footer>
   );
 }

@@ -1,10 +1,11 @@
 // src/components/Header.js
 import React from 'react';
+import './Header.css'; // Import CSS styles
 
 function Header() {
   return (
-    <header style={{ padding: '10px', background: '#4CAF50', color: 'white' }}>
-      <h1>eHospital Management System</h1>
+    <header className="header">
+      <h1>E-Hospital ICU Prediction System</h1>
     </header>
   );
 }
