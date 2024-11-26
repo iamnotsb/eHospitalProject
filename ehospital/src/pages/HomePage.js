@@ -14,6 +14,7 @@ function HomePage() {
 
     setLoading(true);
     setError(null);
+    setPatientData(null); // Clear previous data on new search
 
     try {
       const response = await fetch(`http://127.0.0.1:5000/get_patient_data?patient_id=${patientId}`);
@@ -37,6 +38,11 @@ function HomePage() {
         throw new Error('Invalid data format received from server');
       }
 
+      // Check if data is empty or invalid
+      if (!data || Object.keys(data).length === 0) {
+        throw new Error('Invalid Patient ID');
+      }
+
       // Clean data if necessary
       const cleanData = JSON.parse(
         JSON.stringify(data, (key, value) => 
@@ -48,7 +54,7 @@ function HomePage() {
       setPatientData(cleanData);
     } catch (err) {
       console.error('Error:', err);
-      setError(err.message);
+      setError(err.message || 'An error occurred');
     } finally {
       setLoading(false);
     }
@@ -146,9 +152,9 @@ function HomePage() {
         </div>
       )}
 
-      {!patientData && !loading && !error && (
+      {!patientData && !loading && error && (
         <div className="no-data">
-          No patient data available. Please search for a valid patient ID.
+          Invalid Patient ID. Please search for a valid patient ID.
         </div>
       )}
 
