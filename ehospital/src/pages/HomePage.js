@@ -17,17 +17,17 @@ function HomePage() {
 
     try {
       const response = await fetch(`http://127.0.0.1:5000/get_patient_data?patient_id=${patientId}`);
-      
+
       if (!response.ok) {
         throw new Error('Failed to fetch data');
       }
 
       // First get the response as text
       const responseText = await response.text();
-      
+
       // Replace NaN with null in the response text
       const sanitizedText = responseText.replace(/:\s*NaN/g, ': null');
-      
+
       // Parse the sanitized JSON
       let data;
       try {
@@ -37,7 +37,7 @@ function HomePage() {
         throw new Error('Invalid data format received from server');
       }
 
-      // Optional: Clean up the data object by converting any remaining NaN values to null
+      // Clean data if necessary
       const cleanData = JSON.parse(
         JSON.stringify(data, (key, value) => 
           Number.isNaN(value) ? null : value
@@ -56,9 +56,9 @@ function HomePage() {
 
   return (
     <div className="container">
-      <div className="header">
-        <h2>Welcome to eHospital</h2>
-        <p>This is the main dashboard for managing hospital records and patient information.</p>
+      <div className="info-section">
+        <h3>Welcome to E-hospital ICU Prediction System</h3>
+        <p>These tables provide information about a patient's probability of being admitted to the ICU, their predicted Length of Stay, and Discharge Predictions.</p>
       </div>
 
       <div className="search-section">
@@ -74,8 +74,7 @@ function HomePage() {
           <button 
             onClick={handleSearch}
             disabled={loading}
-            className={loading ? 'loading' : ''}
-          >
+            className={loading ? 'loading' : ''}>
             {loading ? 'Searching...' : 'Search'}
           </button>
         </div>
@@ -84,62 +83,66 @@ function HomePage() {
       </div>
 
       {patientData && (
-        <div className="patient-info">
-          <h3>Patient Information</h3>
-          <table>
-            <tbody>
-              <tr>
-                <td><strong>Patient ID:</strong></td>
-                <td>{patientData.patient_id}</td>
-              </tr>
-              <tr>
-                <td><strong>Age:</strong></td>
-                <td>{patientData.age}</td>
-              </tr>
-              <tr>
-                <td><strong>Gender:</strong></td>
-                <td>{patientData.gender}</td>
-              </tr>
-              <tr>
-                <td><strong>Ethnicity:</strong></td>
-                <td>{patientData.ethnicity}</td>
-              </tr>
-              <tr>
-                <td><strong>Diagnosis:</strong></td>
-                <td>{patientData.diagnosis}</td>
-              </tr>
-            </tbody>
-          </table>
+        <div className="dashboard">
+          <div className="info-card">
+            <h3 className="section-title">Patient Information</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td><strong>Patient ID:</strong></td>
+                  <td>{patientData.patient_id}</td>
+                </tr>
+                <tr>
+                  <td><strong>Age:</strong></td>
+                  <td>{patientData.age}</td>
+                </tr>
+                <tr>
+                  <td><strong>Gender:</strong></td>
+                  <td>{patientData.gender}</td>
+                </tr>
+                <tr>
+                  <td><strong>Ethnicity:</strong></td>
+                  <td>{patientData.ethnicity}</td>
+                </tr>
+                <tr>
+                  <td><strong>Diagnosis:</strong></td>
+                  <td>{patientData.diagnosis}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
 
-          <h3>Patient Prediction</h3>
-          <table>
-            <tbody>
-              <tr>
-                <td><strong>Original Admission Location:</strong></td>
-                <td>{patientData.original_admission_location}</td>
-              </tr>
-              <tr>
-                <td><strong>Predicted Admission Location:</strong></td>
-                <td>{patientData.predicted_admission_location}</td>
-              </tr>
-              <tr>
-                <td><strong>Original Discharge Location:</strong></td>
-                <td>{patientData.original_discharge_location}</td>
-              </tr>
-              <tr>
-                <td><strong>Predicted Discharge Location:</strong></td>
-                <td>{patientData.predicted_discharge_location}</td>
-              </tr>
-              <tr>
-                <td><strong>Original Length of Stay:</strong></td>
-                <td>{patientData.original_los}</td>
-              </tr>
-              <tr>
-                <td><strong>Predicted Length of Stay:</strong></td>
-                <td>{patientData.predicted_los}</td>
-              </tr>
-            </tbody>
-          </table>
+          <div className="prediction-card">
+            <h3 className="section-title">Patient Prediction</h3>
+            <table>
+              <tbody>
+                <tr>
+                  <td><strong>Original Admission Location:</strong></td>
+                  <td>{patientData.original_admission_location}</td>
+                </tr>
+                <tr>
+                  <td><strong>Predicted Admission Location:</strong></td>
+                  <td>{patientData.predicted_admission_location}</td>
+                </tr>
+                <tr>
+                  <td><strong>Original Discharge Location:</strong></td>
+                  <td>{patientData.original_discharge_location}</td>
+                </tr>
+                <tr>
+                  <td><strong>Predicted Discharge Location:</strong></td>
+                  <td>{patientData.predicted_discharge_location}</td>
+                </tr>
+                <tr>
+                  <td><strong>Original Length of Stay:</strong></td>
+                  <td>{patientData.original_los}</td>
+                </tr>
+                <tr>
+                  <td><strong>Predicted Length of Stay:</strong></td>
+                  <td>{patientData.predicted_los}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
 
@@ -157,17 +160,11 @@ function HomePage() {
           font-family: Arial, sans-serif;
         }
 
-        .header {
-          text-align: center;
-          margin-bottom: 30px;
+        .info-section {
+          background-color: #f0f8ff;
           padding: 20px;
-          background: #007acc;
           border-radius: 8px;
-        }
-
-        .header h2 {
-          color: #2c3e50;
-          margin-bottom: 10px;
+          margin-bottom: 30px;
         }
 
         .search-section {
@@ -201,15 +198,6 @@ function HomePage() {
           transition: background-color 0.3s;
         }
 
-        button:hover {
-          background-color: #2980b9;
-        }
-
-        button:disabled {
-          background-color: #95a5a6;
-          cursor: not-allowed;
-        }
-
         .error-message {
           color: #e74c3c;
           padding: 10px;
@@ -218,15 +206,23 @@ function HomePage() {
           margin-top: 10px;
         }
 
-        .patient-info {
+        .dashboard {
+          display: flex;
+          gap: 20px;
+          flex-wrap: wrap;
+        }
+
+        .info-card, .prediction-card {
           background: white;
           padding: 20px;
           border-radius: 8px;
           box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+          width: 48%;
+          margin-bottom: 20px;
         }
 
-        .patient-info h3 {
-          color: #2c3e50;
+        .section-title {
+          color: #3498db;
           margin-bottom: 20px;
           padding-bottom: 10px;
           border-bottom: 2px solid #3498db;
@@ -239,7 +235,7 @@ function HomePage() {
         }
 
         table td {
-          padding: 10px;
+          padding: 12px 15px;
           border: 1px solid #ddd;
           text-align: left;
         }
@@ -254,17 +250,6 @@ function HomePage() {
           color: #7f8c8d;
           background: #f8f9fa;
           border-radius: 8px;
-        }
-
-        @media (max-width: 768px) {
-          .search-box {
-            flex-direction: column;
-            align-items: stretch;
-          }
-
-          input {
-            max-width: none;
-          }
         }
       `}</style>
     </div>

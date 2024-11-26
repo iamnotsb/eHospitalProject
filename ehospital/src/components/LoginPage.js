@@ -7,7 +7,7 @@ function LoginPage({ onLoginSuccess }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === 'user' && password === 'password') {
+    if (username === 'testuser' && password === 'password') {
       onLoginSuccess();
     } else {
       alert('Invalid login credentials');
@@ -17,11 +17,15 @@ function LoginPage({ onLoginSuccess }) {
   return (
     <div className="login-page">
       <div className="login-container">
+        <div className="login-header">
+          <h2>Welcome Back!</h2>
+          <p>Please log in to continue</p>
+        </div>
         <form onSubmit={handleSubmit} className="login-form">
-          <h2>Login</h2>
           <div className="form-group">
-            <label>Username</label>
+            <label htmlFor="username">Username</label>
             <input 
+              id="username" 
               type="text" 
               value={username} 
               onChange={(e) => setUsername(e.target.value)} 
@@ -30,8 +34,9 @@ function LoginPage({ onLoginSuccess }) {
             />
           </div>
           <div className="form-group">
-            <label>Password</label>
+            <label htmlFor="password">Password</label>
             <input 
+              id="password" 
               type="password" 
               value={password} 
               onChange={(e) => setPassword(e.target.value)} 
@@ -39,8 +44,11 @@ function LoginPage({ onLoginSuccess }) {
               required 
             />
           </div>
-          <button type="submit" className="login-button">Login</button>
+          <button type="submit" className="login-button">Log In</button>
         </form>
+        <div className="forgot-password">
+          <a href="#">Forgot your password?</a>
+        </div>
       </div>
     </div>
   );
