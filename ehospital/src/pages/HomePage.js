@@ -153,7 +153,7 @@ const handleSearch = async () => {
           text-align: center;
           margin-bottom: 30px;
           padding: 20px;
-          background: #f8f9fa;
+          background: #007acc;
           border-radius: 8px;
         }
 
